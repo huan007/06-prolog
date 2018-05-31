@@ -65,4 +65,4 @@ run_all_tests(Max,Pts) :- run_tests(
 	run_test((find_items(X,[guacamole,cheese,salsa],[]),!,unordered_eq(X,[al_pastor_taco,combo_plate])),1)
     ],Max,Pts).
 		
-:- run_all_tests(Max,Pts), print_list(['Result: ',Pts,'/',Max,'\n']), halt.
+:- set_prolog_flag(print_write_options, [character_escapes(true)]), run_all_tests(Max,Pts), print_list(['Result: ',Pts,'/',Max,'\n']), halt.
