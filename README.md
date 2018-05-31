@@ -80,8 +80,8 @@ judiciously.
 
 ### (a) 5 points
 Write a Prolog predicate `zip(L1,L2,L3)` that is true if the *list*
-`L3` is obtained by zipping (i.e. ``shuffling", or ``interleaving")
-the elements of the lists `L1` and `L2`, which can have different lengths.
+`L3` is obtained by zipping (i.e. ``interleaving")
+the elements of the lists `L1` and `L2`, which have the same length.
 For instance, when you are done, you should get the following behavior:
 
 ```prolog
@@ -89,26 +89,16 @@ For instance, when you are done, you should get the following behavior:
 true.
 
 ?- zip([1,2],[a,b],X).
-X = [1, 2, a, b] ;
-X = [1, 2, a, b] ;
-X = [1, a, 2, b] ;
-X = [1, a, b, 2] ;
-X = [a, 1, 2, b] ;
-X = [a, 1, b, 2] ;
-X = [a, b, 1, 2] ;
-X = [a, b, 1, 2] ;
-false.
+X = [1, a, 2, b].
 
 ?- zip([1,2],[a,b],[1,2,a,b]).
 true.
 
 ?- zip(X,[a,b],[1,a,2,b]).
-X = [1,2]
-true.
+X = [1,2].
 
 ?- zip([1,2],X,[1,a,2,b]).
-X = [a,b]
-true.
+X = [a,b].
 ```
 
 ### (b) 10 points
