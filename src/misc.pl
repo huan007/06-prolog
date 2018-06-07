@@ -10,16 +10,50 @@ isin(X,[_|T]) :- isin(X,T).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Problem 1: Rules
 
-zip(L1,L2,L3) :- throw(to_be_done).
+%zip(L1,L2,L3) :- throw(to_be_done).
+zip([],[],[]).
+zip([A|AList],[B|BList],[C,D|CList]) :- A=C,B=D,zip(AList, BList, CList).
 
-assoc(L,X,Y) :- throw(to_be_done). 
+%assoc(L,X,Y) :- throw(to_be_done). 
+assoc([[Key,Value]|Rest],X,Y) :- (X=Key,Y=Value);assoc(Rest,X,Y).
 
-remove_duplicates(L1,L2) :- throw(to_be_done). 
+%remove_duplicates(L1,L2) :- throw(to_be_done). 
+remove_duplicates([],[]).
+remove_duplicates([A|AList],[B|BList]) :- A=B, delete(AList, A, NewList), remove_duplicates((NewList), BList).
 
-union(L1,L2,L3) :- throw(to_be_done). 
+%union(L1,L2,L3) :- throw(to_be_done). 
+union(L1,L2,L3) :- append(L1,L2,L1ANDL2), remove_duplicates(L1ANDL2, NODUP), listEqual(NODUP, L3).
 
-intersection(L1,L2,L3) :- throw(to_be_done). 
+listEqual([],[]).
+listEqual([A|AList], [B|BList]) :- A = B, listEqual(AList,BList).
 
+%intersection(L1,L2,L3) :- 
+
+interHelper([],[],[]).
+%%interHelper([A|AList], [B|BList], [C|CList]) :- 
+%interHelper([],[],[]).
+%interHelper([],X,X).
+%interHelper(X,[],X).
+%interHelper(X,X,X).
+%interHelper([A|AList],BList,CList) :- (member(A,BList), member(A,CList)),interHelper(AList, BList, CList).
+%interHelper([A|AList],BList,CList) :- (not(member(A,BList)),not(member(A,CList))), interHelper(AList, BList, CList).
+
+intersection(AList,BList,CList) :- remove_duplicates(AList, AINNO)
+								, remove_duplicates(BList, BINNO)
+								, append(AINNO, BINNO, CONCAT)
+								, union(AINNO, BINNO, UNION)
+								, removeHelper(UNION, CONCAT, CList).
+
+
+%removeFirst(_,[],[]).
+%removeFirst(A, [A|Tail], Tail).
+%removeFirst(A, [B|Tail], [B,BTail]) :- A \= B, removeFirst(A,Tail,BTail).
+
+removeHelper([],X,X).
+removeHelper([A|ATail], BList, Result) :- removeFirstOccur(A, BList, BLess), removeHelper(ATail, BLess, Result).
+removeFirstOccur(_,[],[]).
+removeFirstOccur(A,[A|Tail],Tail).
+removeFirstOccur(A,[B|Tail],[B|BTail]) :-  A \= B, removeFirstOccur(A,Tail,BTail).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Problem 2: Facts
 
@@ -67,15 +101,36 @@ taqueria(la_milpas_quatros, [jiminez, martin, antonio, miguel],
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Problem 2: Rules
 
-available_at(X,L) :- throw(to_be_done).
+%available_at(X,L) :- throw(to_be_done).
+available_at(X,L) :- taqueria(L, EmpList, MenuList), member(X, MenuList).
 
-multi_available(X) :- throw(to_be_done). 
+%multi_available(X) :- throw(to_be_done). 
+multi_available(X) :- taqueria(L, EmpList, MenuList)
+					, member(X, MenuList)
+					, taqueria(L1, EmpList1, MenuList1)
+					, member(X, MenuList1)
+					, L \= L1.
 
-overworked(X) :- throw(to_be_done). 
+%overworked(X) :- throw(to_be_done). 
+overworked(X) :-      taqueria(L, EmpList, MenuList)
+					, member(X, EmpList)
+					, taqueria(L1, EmpList1, MenuList1)
+					, member(X, EmpList1)
+					, L \= L1.
 
-total_cost(X,K) :- throw(to_be_done). 
+%total_cost(X,K) :- throw(to_be_done). 
+total_cost(X,K) :- 	  ingredients(X, Z)
+					, listCost(Z, K).
 
-has_ingredients(X,Is) :- throw(to_be_done).
+listCost([],0).
+listCost([X|Xs],Cost) :-  cost(X, ItemCost)
+						, listCost(Xs, RestCost)
+						, Cost is ItemCost + RestCost.
+
+%has_ingredients(X,Is) :- throw(to_be_done).
+has_ingredients(X, Is) :- ingredients(X, XIs)
+						, intersection(XIs, Is, InterMilan)
+						, listEqual(Is, InterMilan).
 
 avoids_ingredients(X,Is) :- throw(to_be_done). 
 
